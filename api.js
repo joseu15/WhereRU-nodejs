@@ -5,19 +5,10 @@ const port = process.env.PORT || 80;
 
 
 app.listen(port, ()=>{
-    console.log("Sever is now listening at port 80");
+    console.log("Sever is now listening at port "+port);
 })
 
 client.connect();
-
-app.get('/users', (req, res)=>{
-    client.query(`SELECT * FROM logins`, (err, result)=>{
-        if(!err){
-            res.send(result.rows);
-        }
-    });
-    client.end;
-})
 
 app.get('/login/:username/:password', (req, res)=>{
     client.query('SELECT username FROM logins WHERE username=$1 AND password = $2',[req.params.username,req.params.password], (err, result)=>{
@@ -32,13 +23,45 @@ app.get('/getuser/:username', (req, res)=>{
     client.query('SELECT username FROM logins WHERE username=$1',[req.params.username], (err, result)=>{
         if(!err){
             res.send(result.rows);
-        }
+        }   
     });
     client.end;
 })
 
-app.post('/insertPost', (req, res)=> { //TODO
-    const user = req.body;
+app.get('/getNearby/:latitude/:longitude/:radius',(req,res)=>{
+    var mileToLat = 0.01449275362;
+    var mileToLon = 0.01831501831;
+    var maxLatitude = req.params.latitude + (mileToLat * req.params.radius);
+    var minLatitude = req.params.latitude  - (mileToLat * req.params.radius);
+    var maxLongitude = req.params.longitude  + (mileToLon * req.params.radius);
+    var minLongitude = req.params.longitude - (mileToLon * req.params.radius);
+    client.query('SELECT * FROM posts p WHERE p.latitude <= $1 AND p.latitude >= $2 AND p.longitude <= $3 AND p.longitude >= $4 LIMIT 50',[maxLatitude,minLatitude,maxLongitude,minLongitude],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err)
+            console.log(err);
+        }
+    });
+    client.end;
+})
+//UNTESTED
+
+//User should check if the username is taken before attempting or will get error
+app.post('/createAccount/:username/:password',(req,res)=>{
+    client.query('INSERT INTO logins VALUES($1,$2)',[req.params.username,req.params.password],(err,result)=>{
+        if (!err){
+            res.send('Account created successfully')
+        }
+        else{
+            res.send('Account was not created');
+        }
+    });
+})
+
+
+app.post('/insertPost', (req, res)=> {
     client.query(`INSERT INTO posts VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,[req.body.id,req.body.username,req.body.text,req.body.radius,0,req.body.tag1,req.body.tag2,req.body.tag3,req.body.tag4,req.body.tag5,req.body.lat,req.body.lon,req.body.time], (err, result)=>{
         if(!err){
             res.send('Insertion was successful')
@@ -47,5 +70,122 @@ app.post('/insertPost', (req, res)=> { //TODO
     })
     client.end;
 })
+
+
+app.post('/insertComment',(req,res)=>{
+    client.query('INSERT INTO comments VALUES($1,$2,$3,$4,$5,$6)',[req.body.id,req.body.postid,req.body.text,req.body.likes,req.body.likes,req.body.author,req.body.author],(err,result)=>{
+        if(!err){
+            res.send('Insertion was successful')
+        }
+        else{
+            console.log(err.message)
+        }
+    })
+})
+
+app.get('/likePost/:postid',(req,res)=>{
+    client.query('UPDATE posts SET likes = likes + 1 WHERE id = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send('The post has been liked');
+        }
+        else{
+            res.send(err);
+            console.log(err);
+        }
+    });
+})
+
+app.get('/likeComment/:commentid',(req,res)=>{
+    client.query('UPDATE posts SET likes = likes + 1 WHERE id = $1',[req.params.commentid],(err,result)=>{
+        if(!err){
+            res.send('The comment has been liked');
+        }
+        else{
+            res.send(err);
+            console.log(err);
+        }
+    });
+})
+
+app.get('/dislikePost/:postid',(req,res)=>{
+    client.query('UPDATE posts SET likes = likes - 1 WHERE id = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send('The post has been liked');
+        }
+        else{
+            res.send(err);
+            console.log(err);
+        }
+    });
+})
+
+app.get('/dislikeComment/:commentid',(req,res)=>{
+    client.query('UPDATE posts SET likes = likes - 1 WHERE id = $1',[req.params.commentid],(err,result)=>{
+        if(!err){
+            res.send('The comment has been liked');
+        }
+        else{
+            res.send(err);
+            console.log(err);
+        }
+    });
+})
+
+app.get('/deletePost/:postid',(req,res)=>{
+    client.query('DELETE FROM posts WHERE id = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send('The post has been deleted');
+        }
+        else{
+            res.send(err);
+            console.log(err);
+        }
+    });
+})
+
+app.get('/deleteComment/:commentid',(req,res)=>{
+    client.query('DELETE FROM comments WHERE id = $1',[req.params.commentid],(err,result)=>{
+        if(!err){
+            res.send('The comment has been deleted');
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
+
+app.get('/getPostLikes/:postid',(req,res)=>{
+    client.query('SELECT likes FROM posts WHERE id = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
+
+app.get('/getPostComments/:postid',(req,res)=>{
+    client.query('SELECT * FROM comments WHERE postid = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
+
+app.get('/getUserPosts/:username',(req,res)=>{
+    client.query('SELECT * FROM posts WHERE author = $1',[req.params.username],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
+
 
 
