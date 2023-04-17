@@ -1,9 +1,11 @@
 const client = require('./connection.js')
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 80;
 
-app.listen(80, ()=>{
-    console.log("Sever is now listening at port 3300");
+
+app.listen(port, ()=>{
+    console.log("Sever is now listening at port 80");
 })
 
 client.connect();
