@@ -37,6 +37,11 @@ app.post('/getNearby',(req,res)=>{
     var minLatitude = latitude  - (mileToLat * radius);
     var maxLongitude = longitude  + (mileToLon * radius);
     var minLongitude = longitude - (mileToLon * radius);
+    console.log(maxLatitude);
+    console.log(maxLongitude);
+    console.log(minLatitude);
+    console.log(minLongitude);
+
     client.query('SELECT * FROM posts p WHERE p.latitude <= $1 AND p.latitude >= $2 AND p.longitude <= $3 AND p.longitude >= $4 LIMIT 50',[maxLatitude,minLatitude,maxLongitude,minLongitude],(err,result)=>{
         if(!err){
             res.send(result.rows)
