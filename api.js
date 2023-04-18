@@ -195,4 +195,24 @@ app.get('/getUserPosts/:username',(req,res)=>{
     });
 })
 
+app.get('/getPost/:postid',(req,res)=>{
+    client.query('SELECT * FROM posts WHERE id = $1',[req.params.postid],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
 
+app.get('/getComment/:commentid',(req,res)=>{
+    client.query('SELECT * FROM comments WHERE id = $1',[req.params.commentid],(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
