@@ -28,13 +28,13 @@ app.get('/getuser/:username', (req, res)=>{
     client.end;
 })
 
-app.get('/getNearby/:latitude/:longitude/:radius',(req,res)=>{
+app.get('/getNearby/:radius',(req,res)=>{
     var mileToLat = 0.01449275362;
     var mileToLon = 0.01831501831;
-    var maxLatitude = req.params.latitude + (mileToLat * req.params.radius);
-    var minLatitude = req.params.latitude  - (mileToLat * req.params.radius);
-    var maxLongitude = req.params.longitude  + (mileToLon * req.params.radius);
-    var minLongitude = req.params.longitude - (mileToLon * req.params.radius);
+    var maxLatitude = req.params.latitude + (mileToLat * req.body.radius);
+    var minLatitude = req.params.latitude  - (mileToLat * req.body.radius);
+    var maxLongitude = req.params.longitude  + (mileToLon * req.body.radius);
+    var minLongitude = req.params.longitude - (mileToLon * req.body.radius);
     client.query('SELECT * FROM posts p WHERE p.latitude <= $1 AND p.latitude >= $2 AND p.longitude <= $3 AND p.longitude >= $4 LIMIT 50',[maxLatitude,minLatitude,maxLongitude,minLongitude],(err,result)=>{
         if(!err){
             res.send(result.rows)
