@@ -69,7 +69,7 @@ app.post('/createAccount/:username/:password',(req,res)=>{
 
 
 app.post('/insertPost', (req, res)=> {
-    client.query(`INSERT INTO posts VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,[req.body.id,req.body.username,req.body.text,req.body.radius,0,req.body.tag1,req.body.tag2,req.body.tag3,req.body.tag4,req.body.tag5,req.body.lat,req.body.lon,req.body.time], (err, result)=>{
+    client.query(`WITH maxId AS (SELECT max(id)+1 FROM posts) INSERT INTO posts VALUES(maxid.mid, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,[req.body.username,req.body.text,req.body.radius,0,req.body.tag1,req.body.tag2,req.body.tag3,req.body.tag4,req.body.tag5,req.body.lat,req.body.lon,req.body.time], (err, result)=>{
         if(!err){
             res.send('Insertion was successful')
         }
@@ -194,25 +194,4 @@ app.get('/getUserPosts/:username',(req,res)=>{
     });
 })
 
-app.get('/nextPostId',(req,res)=>{
-    client.query('SELECT max(id)+1 AS next FROM posts',(err,result)=>{
-        if(!err){
-            res.send(result.rows)
-        }
-        else{
-            res.send(err);
-        }
-    });
-})
-
-app.get('/nextCommentId',(req,res)=>{
-    client.query('SELECT max(id)+1 AS next FROM comments',(err,result)=>{
-        if(!err){
-            res.send(result.rows)
-        }
-        else{
-            res.send(err);
-        }
-    });
-})
 
