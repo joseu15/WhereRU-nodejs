@@ -29,12 +29,13 @@ app.get('/getuser/:username', (req, res)=>{
 })
 
 app.post('/getNearby',(req,res)=>{
+    const {latitude,longitude,radius} = req.body
     var mileToLat = 0.01449275362;
     var mileToLon = 0.01831501831;
-    var maxLatitude = req.body.latitude + (mileToLat * req.body.radius);
-    var minLatitude = req.body.latitude  - (mileToLat * req.body.radius);
-    var maxLongitude = req.body.longitude  + (mileToLon * req.body.radius);
-    var minLongitude = req.body.longitude - (mileToLon * req.body.radius);
+    var maxLatitude = latitude + (mileToLat * radius);
+    var minLatitude = latitude  - (mileToLat * radius);
+    var maxLongitude = longitude  + (mileToLon * radius);
+    var minLongitude = longitude - (mileToLon * radius);
     client.query('SELECT * FROM posts p WHERE p.latitude <= $1 AND p.latitude >= $2 AND p.longitude <= $3 AND p.longitude >= $4 LIMIT 50',[maxLatitude,minLatitude,maxLongitude,minLongitude],(err,result)=>{
         if(!err){
             res.send(result.rows)
