@@ -194,5 +194,25 @@ app.get('/getUserPosts/:username',(req,res)=>{
     });
 })
 
+app.get('/nextPostId',(req,res)=>{
+    client.query('SELECT max(id)+1 AS next FROM posts',(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
 
+app.get('/nextCommentId',(req,res)=>{
+    client.query('SELECT max(id)+1 AS next FROM comments',(err,result)=>{
+        if(!err){
+            res.send(result.rows)
+        }
+        else{
+            res.send(err);
+        }
+    });
+})
 
