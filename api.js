@@ -44,10 +44,11 @@ app.post('/getNearby',(req,res)=>{
 
     client.query('SELECT * FROM posts p WHERE p.latitude <= $1 AND p.latitude >= $2 AND p.longitude <= $3 AND p.longitude >= $4 LIMIT 50',[maxLatitude,minLatitude,maxLongitude,minLongitude],(err,result)=>{
         if(!err){
-            res.send(result.rows)
+            res.send(result.rows);
+            console.log(result.rows);
         }
         else{
-            res.send(err)
+            res.send(err);
             console.log(err);
         }
     });
