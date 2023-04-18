@@ -33,10 +33,10 @@ app.post('/getNearby',(req,res)=>{
     const {latitude,longitude,radius} = req.body
     var mileToLat = 0.01449275362;
     var mileToLon = 0.01831501831;
-    var maxLatitude = latitude + (mileToLat * radius);
-    var minLatitude = latitude  - (mileToLat * radius);
-    var maxLongitude = longitude  + (mileToLon * radius);
-    var minLongitude = longitude - (mileToLon * radius);
+    var maxLatitude = latitude + (mileToLat * (radius/1609.34));
+    var minLatitude = latitude  - (mileToLat * (radius/1609.34));
+    var maxLongitude = longitude  + (mileToLon * (radius/1609.34));
+    var minLongitude = longitude - (mileToLon * (radius/1609.34));
     console.log(maxLatitude);
     console.log(maxLongitude);
     console.log(minLatitude);
