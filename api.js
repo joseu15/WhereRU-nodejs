@@ -28,7 +28,7 @@ app.get('/getuser/:username', (req, res)=>{
     client.end;
 })
 
-app.get('/getNearby/:radius',(req,res)=>{
+app.post('/getNearby/:radius',(req,res)=>{
     var mileToLat = 0.01449275362;
     var mileToLon = 0.01831501831;
     var maxLatitude = req.params.latitude + (mileToLat * req.body.radius);
