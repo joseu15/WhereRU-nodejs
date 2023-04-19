@@ -65,7 +65,7 @@ app.post('/createAccount/:username/:password',(req,res)=>{
         }
         else{
             console.log(err.message);
-            res.send(err.message);
+            res.send("1");
         } 
     });
 })
