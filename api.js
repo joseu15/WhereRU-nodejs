@@ -59,15 +59,13 @@ app.post('/getNearby',(req,res)=>{
 
 //User should check if the username is taken before attempting or will get error
 app.post('/createAccount/:username/:password',(req,res)=>{
-    client.query('INSERT INTO logins SELECT $1,$2 WHERE NOT EXISTS (SELECT 1 FROM logins WHERE username = $3)',[req.params.username,req.params.password,req.params.username],(err,result)=>{
+    client.query('INSERT INTO logins VALUES($1,$2)',[req.params.username,req.params.password],(err,result)=>{
         if (!err){
-            console.log(result.rows + result.insertId);
             res.send('Account created successfully');
-            
         }
         else{
             console.log(err.message + ":(");
-            res.send("1");
+            res.send(err.message);
         } 
     });
 })
