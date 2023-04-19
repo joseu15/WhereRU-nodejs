@@ -64,7 +64,8 @@ app.post('/createAccount/:username/:password',(req,res)=>{
             res.send('Account created successfully')
         }
         else{
-            res.send('Account was not created');
+            console.log(err.message);
+            res.send(err.message);
         }
     });
 })
