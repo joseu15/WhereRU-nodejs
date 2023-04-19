@@ -104,7 +104,7 @@ app.get('/likePost/:postid',(req,res)=>{
 })
 
 app.get('/likeComment/:commentid',(req,res)=>{
-    client.query('UPDATE posts SET likes = likes + 1 WHERE id = $1',[req.params.commentid],(err,result)=>{
+    client.query('UPDATE comments SET likes = likes + 1 WHERE id = $1',[req.params.commentid],(err,result)=>{
         if(!err){
             res.send('The comment has been liked');
         }
@@ -116,7 +116,7 @@ app.get('/likeComment/:commentid',(req,res)=>{
 })
 
 app.get('/dislikePost/:postid',(req,res)=>{
-    client.query('UPDATE posts SET likes = likes - 1 WHERE id = $1',[req.params.postid],(err,result)=>{
+    client.query('UPDATE comments SET likes = likes - 1 WHERE id = $1',[req.params.postid],(err,result)=>{
         if(!err){
             res.send('The post has been liked');
         }
