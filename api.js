@@ -54,6 +54,7 @@ app.post('/getNearby',(req,res)=>{
     });
     client.end;
 })
+
 //UNTESTED
 
 //User should check if the username is taken before attempting or will get error
@@ -68,7 +69,6 @@ app.post('/createAccount/:username/:password',(req,res)=>{
     });
 })
 
-
 app.post('/insertPost', (req, res)=> {
     client.query(`INSERT INTO posts SELECT max(id)+1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 FROM posts`,[req.body.username,req.body.text,req.body.radius,0,req.body.tag1,req.body.tag2,req.body.tag3,req.body.tag4,req.body.tag5,req.body.lat,req.body.lon,req.body.time], (err, result)=>{
         if(!err){
@@ -79,9 +79,8 @@ app.post('/insertPost', (req, res)=> {
     client.end;
 })
 
-
 app.post('/insertComment',(req,res)=>{
-    client.query('INSERT INTO comments VALUES($1,$2,$3,$4,$5,$6)',[req.body.id,req.body.postid,req.body.text,req.body.likes,req.body.likes,req.body.author,req.body.author],(err,result)=>{
+    client.query('INSERT INTO comments SELECT max(id)+1, $1, $2, $3, $4, $5 FROM comments',[req.body.postid,req.body.text,0,req.body.author,req.body.time],(err,result)=>{
         if(!err){
             res.send('Insertion was successful')
         }
