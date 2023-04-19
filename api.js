@@ -61,7 +61,8 @@ app.post('/getNearby',(req,res)=>{
 app.post('/createAccount/:username/:password',(req,res)=>{
     client.query('INSERT INTO logins SELECT $1,$2 WHERE NOT EXISTS (SELECT 1 FROM logins WHERE username = $1)',[req.params.username,req.params.password],(err,result)=>{
         if (!err){
-            res.send('Account created successfully')
+            console.log(result.rows);
+            res.send('Account created successfully');
         }
         else{
             console.log(err.message);
