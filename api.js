@@ -55,9 +55,6 @@ app.post('/getNearby',(req,res)=>{
     client.end;
 })
 
-//UNTESTED
-
-//User should check if the username is taken before attempting or will get error
 app.post('/createAccount/:username/:password',(req,res)=>{
     client.query('INSERT INTO logins VALUES($1,$2)',[req.params.username,req.params.password],(err,result)=>{
         if (!err){
@@ -135,29 +132,6 @@ app.get('/dislikeComment/:commentid',(req,res)=>{
         else{
             res.send(err);
             console.log(err);
-        }
-    });
-})
-
-app.get('/deletePost/:postid',(req,res)=>{
-    client.query('DELETE FROM posts WHERE id = $1',[req.params.postid],(err,result)=>{
-        if(!err){
-            res.send('The post has been deleted');
-        }
-        else{
-            res.send(err);
-            console.log(err);
-        }
-    });
-})
-
-app.get('/deleteComment/:commentid',(req,res)=>{
-    client.query('DELETE FROM comments WHERE id = $1',[req.params.commentid],(err,result)=>{
-        if(!err){
-            res.send('The comment has been deleted');
-        }
-        else{
-            res.send(err);
         }
     });
 })
